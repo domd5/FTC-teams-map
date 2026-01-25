@@ -35,30 +35,19 @@ async function geocode(location) {
 
 async function plotTeams() {
   const teams = await fetchTeams();
+  console.log("Teams:", teams.length);
 
   for (const team of teams) {
-    if (!team.city) continue;
+    if (!team || !team.city) continue;
 
     const location = `${team.city}, WI, USA`;
-    const cacheKey = `coords-${team.teamNumber}`;
+    const coords = await geocode(location);
 
-    let coords = localStorage.getItem(cacheKey);
+    if (!coords) continue;
 
-    if (coords) {
-      coords = JSON.parse(coords);
-    } else {
-      coords = await geocode(location);
-      if (!coords) continue;
-      localStorage.setItem(cacheKey, JSON.stringify(coords));
-    }
-
-    L.marker([coords.lat, coords.lon])
-      .addTo(map)
-      .bindPopup(`
-        <strong>Team ${team.teamNumber}</strong><br>
-        ${team.nickname || ""}
-      `);
+    L.marker([coords.lat, coords.lon]).addTo(map);
   }
 }
+
 
 plotTeams();
