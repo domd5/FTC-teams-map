@@ -32,6 +32,7 @@ async function geocode(location) {
     lon: parseFloat(data[0].lon)
   };
 }
+console.log(typeof teams, teams);
 
 async function plotTeams() {
   const teams = await fetchTeams();
