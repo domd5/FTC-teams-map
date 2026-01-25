@@ -1,5 +1,5 @@
 // ⚡ Initialize map
-const map = L.map("map").setView([20, 0], 2);
+const map = L.map("map").setView([44.5, -89.5], 7);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors",
@@ -44,21 +44,20 @@ async function plotTeams() {
   const teams = await fetchTeams();
 
   for (const team of teams) {
-    const locParts = [];
-    if (team.city) locParts.push(team.city);
-    if (team.stateProvince) locParts.push(team.stateProvince);
-    if (team.country) locParts.push(team.country);
+    if (team.stateProvince !== "WI" || team.country !== "USA") continue;
 
-    const fullLoc = locParts.join(", ");
-    if (!fullLoc) continue;
+    const fullLoc = `${team.city}, WI, USA`;
 
     const coords = await geocodeLocation(fullLoc);
     if (!coords) continue;
 
     L.marker([coords.lat, coords.lon])
       .addTo(map)
-      .bindPopup(`<strong>${team.nickname || team.teamNumber}</strong><br>${fullLoc}`);
+      .bindPopup(
+        `<strong>${team.teamNumber}</strong><br>${team.nickname}<br>${fullLoc}`
+      );
   }
+
 }
 
 // 🏁 Run
