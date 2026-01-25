@@ -1,12 +1,27 @@
 export default async function handler(req, res) {
   try {
-    res.status(200).json({
-      message: "API route is running",
-      env: {
-        hasUsername: !!process.env.FTC_API_USERNAME,
-        hasKey: !!process.env.FTC_API_KEY
+    const season = req.query.season || 2025;
+
+    const username = process.env.FTC_API_USERNAME;
+    const authKey = process.env.FTC_API_KEY;
+
+    const auth = Buffer.from(`${username}:${authKey}`).toString("base64");
+
+    const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
+
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Basic ${auth}`
       }
     });
+
+    const data = await response.json();
+
+    const wiTeams = data.teams.filter(
+      t => t.stateProvince === "WI" && t.country === "USA"
+    );
+
+    res.status(200).json(wiTeams);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
