@@ -8,8 +8,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // Fetch WI teams from Vercel API
 async function fetchTeams() {
   const res = await fetch("/api/teams");
-  return await res.json();
+  const data = await res.json();
+
+  if (!Array.isArray(data)) {
+    console.error("Expected array, got:", data);
+    return [];
+  }
+
+  return data;
 }
+
 
 // Geocode using OpenStreetMap
 async function geocode(location) {
