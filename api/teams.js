@@ -1,29 +1,38 @@
 export default async function handler(req, res) {
   try {
     const season = req.query.season || 2025;
-    const token = process.env.FTC_API_TOKEN;
 
-    if (!token) {
-      return res.status(500).json({ error: "Missing FTC API token" });
+    const username = process.env.FTC_API_USERNAME;
+    const authKey = process.env.FTC_API_KEY;
+
+    if (!username || !authKey) {
+      return res.status(500).json({
+        error: "Missing FTC API credentials"
+      });
     }
 
-    const url = `https://ftc-api.firstinspires.org/teams?season=${season}`;
+    const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
+
+    const auth = Buffer.from(`${username}:${authKey}`).toString("base64");
 
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Basic ${auth}`
       }
     });
 
     if (!response.ok) {
-      return res.status(500).json({ error: "FTC API request failed" });
+      const text = await response.text();
+      return res.status(500).json({
+        error: "FTC API request failed",
+        details: text
+      });
     }
 
     const data = await response.json();
 
-    // ✅ Wisconsin-only filter
     const wiTeams = data.teams.filter(
-      (team) => team.stateProvince === "WI" && team.country === "USA"
+      t => t.stateProvince === "WI" && t.country === "USA"
     );
 
     res.status(200).json(wiTeams);
