@@ -1,11 +1,11 @@
-// Center on Wisconsin
+// Initialize map (Wisconsin)
 const map = L.map("map").setView([44.5, -89.5], 7);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: "© OpenStreetMap contributors"
+  attribution: "© OpenStreetMap contributors",
 }).addTo(map);
 
-// Fetch WI teams from Vercel API
+// Fetch WI teams from backend
 async function fetchTeams() {
   const res = await fetch("/api/teams");
   const data = await res.json();
@@ -18,37 +18,51 @@ async function fetchTeams() {
   return data;
 }
 
-
-// Geocode using OpenStreetMap
+// Geocode city → lat/lon
 async function geocode(location) {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
+    location
+  )}`;
+
   const res = await fetch(url);
   const data = await res.json();
 
-  if (data.length === 0) return null;
+  if (!data.length) return null;
 
   return {
     lat: parseFloat(data[0].lat),
-    lon: parseFloat(data[0].lon)
+    lon: parseFloat(data[0].lon),
   };
 }
-console.log(typeof teams, teams);
 
+// Plot teams (teams ONLY exists here)
 async function plotTeams() {
   const teams = await fetchTeams();
-  console.log("Teams:", teams.length);
+  console.log("Teams fetched:", teams.length);
 
   for (const team of teams) {
-    if (!team || !team.city) continue;
+    if (!team.city) continue;
 
     const location = `${team.city}, WI, USA`;
-    const coords = await geocode(location);
+    const cacheKey = `coords-${team.teamNumber}`;
 
-    if (!coords) continue;
+    let coords = localStorage.getItem(cacheKey);
 
-    L.marker([coords.lat, coords.lon]).addTo(map);
+    if (coords) {
+      coords = JSON.parse(coords);
+    } else {
+      coords = await geocode(location);
+      if (!coords) continue;
+      localStorage.setItem(cacheKey, JSON.stringify(coords));
+    }
+
+    L.marker([coords.lat, coords.lon])
+      .addTo(map)
+      .bindPopup(
+        `<strong>Team ${team.teamNumber}</strong><br>${team.nickname || ""}`
+      );
   }
 }
 
-
+// ✅ THIS is what starts everything
 plotTeams();
