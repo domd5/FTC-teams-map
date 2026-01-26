@@ -34,7 +34,7 @@ export default async function handler(req, res) {
 
     const auth = Buffer.from(`${username}:${key}`).toString("base64");
 
-    //const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
+    const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
     const ftcRes = await fetch(ftcURL, {
       headers: {
         Authorization: `Basic ${auth}`
