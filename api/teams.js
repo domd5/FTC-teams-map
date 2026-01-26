@@ -38,7 +38,7 @@ export default async function handler(req, res) {
 
     // ✅ Filter Wisconsin teams
     const wiTeams = allTeams.filter(
-      t => t.stateProvince === "WI" && t.country === "USA" && t.city
+      t => t.stateProv === "WI" && t.country === "USA" && t.city
     );
 
     res.status(200).json({
