@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams?page=${page}`;
     
       //const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
-      const ftcRes = await fetch(ftcURL, {
+      const ftcRes = await fetch(url, {
         headers: {
           Authorization: `Basic ${auth}`
         }
