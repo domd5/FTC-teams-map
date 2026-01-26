@@ -6,7 +6,9 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 async function loadTeams() {
   const res = await fetch("/api/teams");
-  const teams = await res.json();
+  const data = await res.json();
+  const teams = data.wiTeams;
+
 
   console.log("Teams received:", teams.length);
 
