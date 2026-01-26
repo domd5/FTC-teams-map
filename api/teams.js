@@ -53,7 +53,7 @@ export default async function handler(req, res) {
     const ftcData = await ftcRes.json();
 
     const wiTeams = ftcData.teams.filter(
-      t => t.stateProvince === "WI" && t.city
+      t => t.statePro === "WI" && t.city
     );
 
     const results = [];
