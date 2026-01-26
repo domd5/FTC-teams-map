@@ -38,6 +38,8 @@ export default async function handler(req, res) {
     let totalPages = 1;
     let results = [];
 
+    let wiTeams = [];
+
     while (page <= totalPages) {
       const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams?page=${page}`;
     
