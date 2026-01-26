@@ -76,7 +76,7 @@ export default async function handler(req, res) {
 
       results.push({
         teamNumber: team.teamNumber,
-        nickname: team.nickname,
+        nameShort: team.nameShort,
         city: team.city,
         lat: coords.lat,
         lon: coords.lon

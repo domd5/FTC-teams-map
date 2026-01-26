@@ -17,7 +17,7 @@ async function loadTeams() {
       .addTo(map)
       .bindPopup(`
         <strong>Team ${team.teamNumber}</strong><br>
-        ${team.nickname || ""}<br>
+        ${team.nameShort || ""}<br>
         ${team.city}, WI
       `);
   }
