@@ -76,10 +76,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-    res.status(200).json({
-      message: "API route is running",
-      env: {
-        hasUsername: !!process.env.FTC_API_USERNAME,
-        hasKey: !!process.env.FTC_API_KEY
-      }
-    });
