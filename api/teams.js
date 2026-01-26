@@ -36,33 +36,37 @@ export default async function handler(req, res) {
 
     let page = 1;
     let totalPages = 1;
-    let allTeams = [];
+    let results = [];
 
     while (page <= totalPages) {
       const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams?page=${page}`;
-    }
-    //const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
-    const ftcRes = await fetch(ftcURL, {
-      headers: {
-        Authorization: `Basic ${auth}`
-      }
-    });
-
-    if (!ftcRes.ok) {
-      const text = await ftcRes.text();
-      return res.status(500).json({
-        error: "FTC API failed",
-        details: text
+    
+      //const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
+      const ftcRes = await fetch(ftcURL, {
+        headers: {
+          Authorization: `Basic ${auth}`
+        }
       });
+
+      if (!ftcRes.ok) {
+        const text = await ftcRes.text();
+        return res.status(500).json({
+          error: "FTC API failed",
+          details: text
+        });
+      }
+
+      const data = await ftcRes.json();
+
+      const newWiTeams = data.teams.filter(
+        t => t.stateProv === "WI" && t.city
+      );
+
+      totalPages = data.pageTotal;
+      wiTeams = wiTeams.concat(newWiTeams);
+
+      page++;
     }
-
-    const ftcData = await ftcRes.json();
-
-    const wiTeams = ftcData.teams.filter(
-      t => t.stateProv === "WI" && t.city
-    );
-
-    const results = [];
 
     for (const team of wiTeams) {
       const coords = await geocodeCity(team.city);
