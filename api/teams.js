@@ -46,6 +46,16 @@ export default async function handler(req, res) {
       wiTeamsCount: wiTeams.length,
       wiTeams
     });
+    results.push({
+        teamNumber: team.teamNumber,
+        nickname: team.nickname,
+        city: team.city,
+        lat: coords.lat,
+        lon: coords.lon
+      });
+    
+
+    //res.status(200).json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
