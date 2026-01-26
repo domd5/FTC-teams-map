@@ -34,14 +34,13 @@ export default async function handler(req, res) {
 
     const auth = Buffer.from(`${username}:${key}`).toString("base64");
 
-    const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
-
+    //const ftcURL = `https://ftc-api.firstinspires.org/v2.0/${season}/teams`;
     const ftcRes = await fetch(ftcURL, {
       headers: {
         Authorization: `Basic ${auth}`
       }
     });
-
+    
     if (!ftcRes.ok) {
       const text = await ftcRes.text();
       return res.status(500).json({
@@ -53,7 +52,7 @@ export default async function handler(req, res) {
     const ftcData = await ftcRes.json();
 
     const wiTeams = ftcData.teams.filter(
-      t => t.statePro === "WI" && t.city
+      t => t.stateProv === "WI" && t.city
     );
 
     const results = [];
