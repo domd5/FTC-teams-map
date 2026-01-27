@@ -1,4 +1,6 @@
 const geoCache = new Map();
+const cityGeoCache = {};
+
   
 async function geocodeCity(city) {
   if (geoCache.has(city)) return geoCache.get(city);
@@ -71,8 +73,18 @@ export default async function handler(req, res) {
     }
 
     for (const team of wiTeams) {
-      const coords = await geocodeCity(team.city);
-      if (!coords) continue;
+      //const coords = await geocodeCity(team.city);
+      //if (!coords) continue;
+        if (!team.city) continue;
+
+        // ✅ LEVEL 2 CACHE
+        if (!cityGeoCache[team.city]) {
+        cityGeoCache[team.city] = await geocodeCity(team.city);
+            }
+
+        const coords = cityGeoCache[team.city];
+        if (!coords) continue;
+
 
       results.push({
         teamNumber: team.teamNumber,
