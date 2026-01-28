@@ -1,17 +1,4 @@
-const map = L.map("map").setView([44.5, -89.5], 7);
-
-let avgLat = 0
-let avgLong = 0
-
-var myIcon = L.icon({
-    iconUrl: 'star.png',
-    iconSize: [38, 95],
-    //iconAnchor: [22, 94],
-    //popupAnchor: [-3, -76],
-    //shadowUrl: 'my-icon-shadow.png',
-    //shadowSize: [68, 95],
-    //shadowAnchor: [22, 94]
-});
+const map = L.map("map").setView([36, 104], 7);
 
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -27,21 +14,15 @@ async function loadTeams() {
   console.log("Teams received:", teams.length);
 
   for (const team of teams) {
-    avgLat = avgLat + team.lat
-    avgLong = avgLong + team.lon
     L.marker([team.lat, team.lon])
       .addTo(map)
       .bindPopup(`
         <strong>Team ${team.teamNumber}</strong><br>
         ${team.nameShort || ""}<br>
-        ${team.city}, WI
+        ${team.city}, China
       `);
   }
 
-  avgLat = avgLat / teams.length
-  avgLong = avgLong / teams.length
-
-  L.marker([avgLat, avgLong], {icon: myIcon}).addTo(map)
 }
 
 loadTeams();

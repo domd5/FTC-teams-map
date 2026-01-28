@@ -6,12 +6,12 @@ async function geocodeCity(city) {
   if (geoCache.has(city)) return geoCache.get(city);
 
   const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
-    city + ", WI, USA"
+    city + ", China"
   )}`;
 
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "FTC-WI-Teams-Map"
+      "User-Agent": "FTC-CN-Teams-Map"
     }
   });
 
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     let totalPages = 1;
     let results = [];
 
-    let wiTeams = [];
+    let cnTeams = [];
 
     while (page <= totalPages) {
       const url = `https://ftc-api.firstinspires.org/v2.0/${season}/teams?page=${page}`;
@@ -62,17 +62,17 @@ export default async function handler(req, res) {
 
       const data = await ftcRes.json();
 
-      const newWiTeams = data.teams.filter(
-        t => t.stateProv === "WI" && t.city
+      const newCnTeams = data.teams.filter(
+        t => t.stateProv === "CN" && t.city 
       );
 
       totalPages = data.pageTotal;
-      wiTeams = wiTeams.concat(newWiTeams);
+      cnTeams = cnTeams.concat(newCnTeams);
 
       page++;
     }
 
-    for (const team of wiTeams) {
+    for (const team of cnTeams) {
       //const coords = await geocodeCity(team.city);
       //if (!coords) continue;
         if (!team.city) continue;
